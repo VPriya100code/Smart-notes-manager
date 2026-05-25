@@ -281,6 +281,7 @@ button:hover {
     transform: translateY(-2px);
 }
 
+
 .add-btn,
 .update-btn {
     background: linear-gradient(135deg, #2563eb, #7c3aed);
