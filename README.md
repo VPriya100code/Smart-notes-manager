@@ -22,7 +22,7 @@ Smart Notes Manager allows users to create, edit, delete, search, organize, and 
 ✅ Sorting Notes 🔃  
 ✅ Delete Confirmation ⚠️  
 ✅ Modern UI/UX 🎨  
-✅ Smooth Animations ✨  
+✅ Smooth Animations✨  
 
 ---
 
