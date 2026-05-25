@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Notes Manager</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- GOOGLE FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- TOAST -->
+    <div id="toast">
+        Note added successfully ✅
+    </div>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+
+        <!-- DARK MODE BUTTON -->
+        <button id="darkModeToggle">
+            🌙 Dark Mode
+        </button>
+
+        <!-- FLOATING ICONS -->
+        <div class="floating-icons">
+
+            <i class="fa-regular fa-note-sticky"></i>
+            <i class="fa-solid fa-pen"></i>
+            <i class="fa-solid fa-star"></i>
+
+        </div>
+
+        <div class="hero-content">
+
+            <div class="hero-icon">
+                📘
+            </div>
+
+            <h1>Smart Notes Manager</h1>
+
+            <p>
+                Your ideas, beautifully organized ✨
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- MAIN -->
+    <div class="container">
+
+        <!-- TOP CONTROLS -->
+        <div class="top-controls">
+
+            <!-- SEARCH -->
+            <form method="GET" action="/" class="search-box">
+
+                <div class="search-input">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" name="search" placeholder="Search notes..." value="{{ search }}">
+
+                </div>
+
+            </form>
+
+            <!-- SORT -->
+            <select id="sortSelect">
+
+                <option value="latest">
+                    Latest First
+                </option>
+
+                <option value="important">
+                    Important First
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- ADD NOTE -->
+        <div class="add-note-card">
+
+            <h2>
+                <i class="fa-solid fa-circle-plus"></i>
+                Add New Note
+            </h2>
+
+            <form method="POST" action="/add">
+
+                <div class="input-icon">
+
+                    <i class="fa-solid fa-tag"></i>
+
+                    <input type="text" name="title" placeholder="Enter note title..." required>
+
+                </div>
+
+                <div class="input-icon textarea-icon">
+
+                    <i class="fa-regular fa-note-sticky"></i>
+
+                    <textarea id="noteContent" name="content" maxlength="500" placeholder="Write your note here..."
+                        required></textarea>
+
+                </div>
+
+                <!-- CHARACTER COUNTER -->
+                <div class="char-counter">
+                    <span id="charCount">0</span>/500 characters
+                </div>
+
+                <!-- FOOTER -->
+                <div class="form-footer">
+
+                    <label class="important-label">
+
+                        <input type="checkbox" name="important">
+
+                        <span>
+                            Mark Important ⭐
+                        </span>
+
+                    </label>
+
+                    <button type="submit" class="add-btn">
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add Note
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- NOTES TITLE -->
+        <h2 class="notes-heading">
+            📝 Your Notes
+        </h2>
+
+        <!-- EMPTY STATE -->
+        {% if notes|length == 0 %}
+
+        <div class="empty-state">
+
+            <i class="fa-regular fa-note-sticky"></i>
+
+            <h2>No Notes Yet</h2>
+
+            <p>Create your first note and stay organized ✨</p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- NOTES GRID -->
+        <div class="notes-grid" id="notesGrid">
+
+            {% for note in notes %}
+
+            <div class="note-card {% if note[3] == 1 %}important-card{% endif %}">
+
+                <!-- TOP -->
+                <div class="note-top">
+
+                    <div>
+
+                        <h3>
+
+                            {{ note[1] }}
+
+                            {% if note[3] == 1 %}
+                            ⭐
+                            {% endif %}
+
+                        </h3>
+
+                        <p class="note-content">
+                            {{ note[2] }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- INFO -->
+                <div class="note-info">
+
+                    <span>
+                        <i class="fa-regular fa-calendar"></i>
+                        {{ note[4] }}
+                    </span>
+
+                    <span>
+                        {{ note[2].split()|length }} words
+                    </span>
+
+                </div>
+
+                <!-- EDIT FORM -->
+                <form method="POST" action="/edit/{{ note[0] }}">
+
+                    <input type="text" name="title" value="{{ note[1] }}" required>
+
+                    <textarea name="content" required>{{ note[2] }}</textarea>
+
+                    <!-- BUTTONS -->
+                    <div class="buttons">
+
+                        <button class="update-btn" type="submit">
+
+                            <i class="fa-solid fa-pen"></i>
+                            Update
+
+                        </button>
+
+                        <a href="/important/{{ note[0] }}">
+
+                            <button class="important-btn" type="button">
+
+                                <i class="fa-solid fa-star"></i>
+                                Important
+
+                            </button>
+
+                        </a>
+
+                        <a href="/delete/{{ note[0] }}" onclick="return confirm('Delete this note?')">
+
+                            <button class="delete-btn" type="button">
+
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+
+                            </button>
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+
+        Made with ❤️ using Flask & SQLite
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        // DARK MODE
+
+        const darkModeToggle =
+            document.getElementById("darkModeToggle");
+
+        darkModeToggle.addEventListener("click", () => {
+
+            document.body.classList.toggle("dark-mode");
+
+            localStorage.setItem(
+                "darkMode",
+                document.body.classList.contains("dark-mode")
+            );
+
+        });
+
+        // LOAD SAVED MODE
+
+        if (localStorage.getItem("darkMode") === "true") {
+
+            document.body.classList.add("dark-mode");
+
+        }
+
+        // CHARACTER COUNTER
+
+        const noteContent =
+            document.getElementById("noteContent");
+
+        const charCount =
+            document.getElementById("charCount");
+
+        noteContent.addEventListener("input", () => {
+
+            charCount.textContent =
+                noteContent.value.length;
+
+        });
+
+        // TOAST
+
+        function showToast(message) {
+
+            const toast =
+                document.getElementById("toast");
+
+            toast.innerText = message;
+
+            toast.classList.add("show");
+
+            setTimeout(() => {
+
+                toast.classList.remove("show");
+
+            }, 3000);
+
+        }
+
+        // SHOW TOAST ON PAGE LOAD
+
+        const noteForm = document.querySelector("form[action='/add']");
+
+            noteForm.addEventListener("submit", () => {
+
+                localStorage.setItem(
+                    "noteAdded",
+                    "true"
+                );
+
+            });
+
+            window.onload = () => {
+
+                if (localStorage.getItem("noteAdded") === "true") {
+
+                    showToast("Note added successfully ✅");
+
+                    localStorage.removeItem("noteAdded");
+
+                }
+
+            };
+        // SORT NOTES
+
+        const sortSelect =
+            document.getElementById("sortSelect");
+
+        sortSelect.addEventListener("change", () => {
+
+            const notesGrid =
+                document.getElementById("notesGrid");
+
+            const cards =
+                Array.from(notesGrid.children);
+
+            if (sortSelect.value === "important") {
+
+                cards.sort((a, b) => {
+
+                    return b.classList.contains("important-card")
+                        - a.classList.contains("important-card");
+
+                });
+
+            }
+
+            notesGrid.innerHTML = "";
+
+            cards.forEach(card => {
+
+                notesGrid.appendChild(card);
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>
